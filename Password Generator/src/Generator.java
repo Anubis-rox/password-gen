@@ -1,4 +1,3 @@
-import java.util.Objects;
 import java.util.Scanner;
 
 public class Generator {
@@ -20,34 +19,35 @@ public class Generator {
         String userOption = "-1";
 
         while (!userOption.equals("4")) {
-
             userOption = keyboard.next();
 
             switch (userOption) {
-                case "1" -> {
+                case "1":
                     requestPassword();
                     printMenu();
-                }
-                case "2" -> {
+                    break;
+                case "2":
                     checkPassword();
                     printMenu();
-                }
-                case "3" -> {
+                    break;
+                case "3":
                     printUsefulInfo();
                     printMenu();
-                }
-                case "4" -> printQuitMessage();
-                default -> {
+                    break;
+                case "4":
+                    printQuitMessage();
+                    break;
+                default:
                     System.out.println();
                     System.out.println("Kindly select one of the available commands");
                     printMenu();
-                }
+                    break;
             }
         }
     }
 
     private Password GeneratePassword(int length) {
-        final StringBuilder pass = new StringBuilder("");
+        final StringBuilder pass = new StringBuilder();
 
         final int alphabetLength = alphabet.getAlphabet().length();
 
@@ -66,7 +66,7 @@ public class Generator {
     private void printUsefulInfo() {
         System.out.println();
         System.out.println("Use a minimum password length of 8 or more characters if permitted");
-        System.out.println("Include lowercase and uppercase alphabetic characters, numbers and symbols if permitted");
+        System.out.println("Include lowercase and uppercase alphabetic characters, numbers, and symbols if permitted");
         System.out.println("Generate passwords randomly where feasible");
         System.out.println("Avoid using the same password twice (e.g., across multiple user accounts and/or software systems)");
         System.out.println("Avoid character repetition, keyboard patterns, dictionary words, letter or number sequences," +
@@ -110,22 +110,22 @@ public class Generator {
             if (isInclude(input)) IncludeUpper = true;
 
             do {
-            System.out.println("Do you want Numbers \"1234...\" to be used? ");
-            input = keyboard.next();
-            PasswordRequestError(input);
+                System.out.println("Do you want Numbers \"1234...\" to be used? ");
+                input = keyboard.next();
+                PasswordRequestError(input);
             } while (!input.equalsIgnoreCase("yes") && !input.equalsIgnoreCase("no"));
 
             if (isInclude(input)) IncludeNum = true;
 
             do {
-            System.out.println("Do you want Symbols \"!@#$...\" to be used? ");
-            input = keyboard.next();
-            PasswordRequestError(input);
+                System.out.println("Do you want Symbols \"!@#$...\" to be used? ");
+                input = keyboard.next();
+                PasswordRequestError(input);
             } while (!input.equalsIgnoreCase("yes") && !input.equalsIgnoreCase("no"));
 
             if (isInclude(input)) IncludeSym = true;
 
-            //No Pool Selected
+            // No Pool Selected
             if (!IncludeUpper && !IncludeLower && !IncludeNum && !IncludeSym) {
                 System.out.println("You have selected no characters to generate your " +
                         "password, at least one of your answers should be Yes\n");
@@ -143,26 +143,19 @@ public class Generator {
         System.err.println("Your generated password -> " + password);
     }
 
-    private boolean isInclude(String Input) {
-        if (Input.equalsIgnoreCase("yes")) {
-            return true;
-        } 
-        else {
-            return false;
-        }
+    private boolean isInclude(String input) {
+        return input.equalsIgnoreCase("yes");
     }
 
-    private void PasswordRequestError(String i) {
-        if (!i.equalsIgnoreCase("yes") && !i.equalsIgnoreCase("no")) {
+    private void PasswordRequestError(String input) {
+        if (!input.equalsIgnoreCase("yes") && !input.equalsIgnoreCase("no")) {
             System.out.println("You have entered something incorrect let's go over it again \n");
         }
     }
 
     private void checkPassword() {
-        String input;
-
         System.out.print("\nEnter your password:");
-        input = keyboard.next();
+        String input = keyboard.next();
 
         final Password p = new Password(input);
 
@@ -180,5 +173,49 @@ public class Generator {
 
     private void printQuitMessage() {
         System.out.println("Closing the program bye bye!");
+    }
+
+    // Main method to run the program
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Generator generator = new Generator(scanner);
+        generator.mainLoop();
+    }
+}
+
+// Assuming Alphabet and Password classes are defined correctly
+class Alphabet {
+    private String alphabet;
+
+    public Alphabet(boolean includeUpper, boolean includeLower, boolean includeNum, boolean includeSym) {
+        StringBuilder sb = new StringBuilder();
+        if (includeLower) sb.append("abcdefghijklmnopqrstuvwxyz");
+        if (includeUpper) sb.append("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        if (includeNum) sb.append("0123456789");
+        if (includeSym) sb.append("!@#$%^&*()-_=+[{]}\\|;:'\",<.>/?");
+
+        alphabet = sb.toString();
+    }
+
+    public String getAlphabet() {
+        return alphabet;
+    }
+}
+
+class Password {
+    private String password;
+
+    public Password(String password) {
+        this.password = password;
+    }
+
+    public String toString() {
+        return password;
+    }
+
+    public int calculateScore() {
+        // Dummy implementation for password strength calculation
+        // Implement your logic here
+        return password.length(); // Example: returning length as score
     }
 }
